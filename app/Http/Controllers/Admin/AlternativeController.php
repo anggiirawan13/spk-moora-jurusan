@@ -6,7 +6,7 @@ use App\Models\Criteria;
 use App\Models\Alternative;
 use App\Models\AlternativeValue;
 use App\Http\Controllers\Controller;
-use App\Models\Car;
+use App\Models\Student;
 use App\Models\SubCriteria;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

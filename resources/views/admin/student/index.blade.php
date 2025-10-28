@@ -29,9 +29,9 @@
         :data="$students"
         
         :columns="[
+            ['label' => 'Foto', 'field' => 'image', 'html' => true],
             ['label' => 'Nama Siswa', 'field' => 'name'],
             ['label' => 'NIS', 'field' => 'nis'],
-            ['label' => 'Foto', 'field' => 'image', 'html' => true],
             ['label' => 'Tingkat Kelas', 'field' => 'grade_level'],
             ['label' => 'Jurusan Saat Ini', 'field' => 'current_major'],
             ['label' => 'Status Aktif', 'field' => 'is_active'],

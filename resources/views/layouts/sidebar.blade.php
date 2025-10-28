@@ -29,7 +29,7 @@
                 <div id="dataMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="{{ route('admin.major.index') }}">
-                            <i class="fas fa-warehouse"></i> 
+                            <i class="fas fa-warehouse"></i> Jurusan
                         </a>
                         <a class="collapse-item" href="{{ route('admin.subject.index') }}">
                             <i class="fas fa-truck-pickup"></i> Mata Pelajaran
@@ -41,7 +41,7 @@
     @endauth
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('student.index') }}">
+        <a class="nav-link" href="{{ route('admin.student.index') }}">
             <i class="fas fa-car"></i>
             <span>Siswa</span>
         </a>
@@ -51,7 +51,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{{ route('calculation.user') }}">
                 <i class="fas fa-bullseye"></i>
-                <span>Rekomendasi Mobil</span>
+                <span>Rekomendasi Jurusn</span>
             </a>
         </li>
     @endcannot
@@ -61,7 +61,7 @@
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dataPenunjang"
                 aria-expanded="false" aria-controls="dataPenunjang">
                 <i class="fas fa-bullseye"></i>
-                <span>Rekomendasi Mobil</span>
+                <span>Rekomendasi Jurusan</span>
             </a>
             <div id="dataPenunjang" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">

@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <label>Kode Mata Pelajaran</label>
-                    <input type="text" class="form-control" name="code" value="{{ $subject->name }}" required>
+                    <input type="text" class="form-control" name="code" value="{{ $subject->code }}" required>
                 </div>
 
                 <div class="form-group">

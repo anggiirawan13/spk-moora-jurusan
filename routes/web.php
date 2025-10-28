@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CarController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\CriteriaController;
 use App\Http\Controllers\Admin\SubCriteriaController;
 use App\Http\Controllers\Admin\AlternativeController;
@@ -31,8 +31,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/delete-image', [UserController::class, 'deleteProfileImage'])->name('profile.delete_image');
 
-    Route::resource('/student', CarController::class)->names('student');
-
     Route::middleware(['not_admin'])->group(function () {
         Route::get('/calculation', [CalculationController::class, 'calculationUser'])->name('calculation.user');
         Route::get('/moora/report', [CalculationController::class, 'downloadPDFUser'])->name('moora.download_pdf_user');
@@ -44,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/moora/report', [CalculationController::class, 'downloadPDF'])->name('moora.download_pdf');
 
         Route::resource('/user', UserController::class)->names('user');
+        Route::resource('/student', StudentController::class)->names('student');
         Route::resource('/major', MajorController::class)->names('major');
         Route::resource('/subject', SubjectController::class)->names('subject');
         Route::resource('/criteria', CriteriaController::class)->names('criteria');

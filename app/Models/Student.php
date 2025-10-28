@@ -12,7 +12,14 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nis', 'name', 'email', 'grade_level', 'major_id', 'user_id'
+        'nis',
+        'name',
+        'email',
+        'grade_level',
+        'major_id',
+        'user_id',
+        'description',
+        'is_active'
     ];
 
     public function major(): BelongsTo

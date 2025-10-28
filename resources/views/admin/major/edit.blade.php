@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <label>Kode Jurusan</label>
-                    <input type="text" class="form-control" name="code" value="{{ $major->name }}" required>
+                    <input type="text" class="form-control" name="code" value="{{ $major->code }}" required>
                 </div>
 
                 <div class="form-group">
@@ -31,7 +31,7 @@
 
                 <div class="form-group">
                     <label>Deskripsi Jurusan</label>
-                    <input type="text" class="form-control" name="description" value="{{ $major->name }}" required>
+                    <input type="text" class="form-control" name="description" value="{{ $major->description }}" required>
                 </div>
 
                 <div class="form-group">
