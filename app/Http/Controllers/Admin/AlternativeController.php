@@ -8,14 +8,21 @@ use App\Models\AlternativeValue;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\SubCriteria;
+use App\Models\Major; // Import Model Major
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AlternativeController extends Controller
 {
+    // ====================================================================
+    // 🎯 INDEX: Menampilkan Daftar Alternatif
+    // ====================================================================
     public function index(): View
     {
+        // Tetap menggunakan Criteria dan Alternative untuk menampilkan tabel
         $criterias = Criteria::with(['major', 'subject'])->orderBy('id')->get();
 
         $alternatives = Alternative::with([
@@ -29,40 +36,33 @@ class AlternativeController extends Controller
 
             $data = [
                 'id'         => $alt->id,
-                'name'       => $student->name ?? 'Siswa Tidak Ditemukan',
-                'nis'       => $student->nis ?? '-',
-                'major_name' => $student->major->name ?? '-',
+                'name'       => optional($student)->name ?? 'Siswa Tidak Ditemukan',
+                'nis'        => optional($student)->nis ?? '-',
+                'major_name' => optional(optional($student)->major)->name ?? '-',
             ];
 
             return $data;
         });
 
         return view('admin.alternative.index', [
-            'criterias'    => $criterias,
+            'criterias'      => $criterias,
             'alternatives' => $dataAlternatives,
         ]);
     }
 
+    // ====================================================================
+    // 🎯 CREATE: Mengambil SEMUA Jurusan, Kriteria, dan Sub Kriteria
+    // ====================================================================
     public function create(): View
     {
         $existingAlternativeStudentIds = Alternative::pluck('student_id');
         $students = Student::whereNotIn('id', $existingAlternativeStudentIds)->get();
 
-        $criteriaCollection = Criteria::with(['major', 'subject', 'subCriteria'])
-            ->orderBy('major_id', 'asc')
-            ->orderBy('subject_id', 'asc')
-            ->get();
-
-        $groupedByMajor = $criteriaCollection->groupBy('major_id');
-
-        $majorsWithCriteria = collect();
-        foreach ($groupedByMajor as $criteriaGroup) {
-            $major = $criteriaGroup->first()->major;
-
-            $major->criteria = $criteriaGroup;
-
-            $majorsWithCriteria->push($major);
-        }
+        // Mengambil SEMUA Jurusan beserta relasi Kriteria dan Sub Kriteria
+        $majorsWithCriteria = Major::with([
+            'criteria.subject',
+            'criteria.subCriteria'
+        ])->get();
 
         return view('admin.alternative.create', [
             'students' => $students,
@@ -70,68 +70,14 @@ class AlternativeController extends Controller
         ]);
     }
 
-    public function show(Alternative $alternative): View
-    {
-        $alternative->load([
-            'student.major',
-            'values.subCriteria.criteria.major',
-            'values.subCriteria.criteria.subject',
-        ]);
-
-        $groupedValues = $alternative->values->groupBy(function ($value) {
-            return $value->subCriteria->criteria->major_id;
-        });
-
-        $majorsWithValues = collect();
-        foreach ($groupedValues as $majorId => $valuesGroup) {
-            $major = $valuesGroup->first()->subCriteria->criteria->major;
-
-            $major->criteria_groups = $valuesGroup->groupBy(function ($value) {
-                return $value->subCriteria->criteria_id;
-            });
-
-            $majorsWithValues->push($major);
-        }
-
-        return view('admin.alternative.show', [
-            'alternative' => $alternative,
-            'majorsWithValues' => $majorsWithValues,
-        ]);
-    }
-
-    public function edit(Alternative $alternative): View
-    {
-        $alternative->load('student');
-
-        $selectedSubs = $alternative->values
-            ->pluck('sub_criteria_id', 'subCriteria.criteria_id')
-            ->toArray();
-
-        $criteriaCollection = Criteria::with(['major', 'subject', 'subCriteria'])
-            ->orderBy('major_id', 'asc')
-            ->orderBy('subject_id', 'asc')
-            ->get();
-
-        $groupedByMajor = $criteriaCollection->groupBy('major_id');
-
-        $majorsWithCriteria = collect();
-        foreach ($groupedByMajor as $criteriaGroup) {
-            $major = $criteriaGroup->first()->major;
-            $major->criteria = $criteriaGroup;
-            $majorsWithCriteria->push($major);
-        }
-
-        return view('admin.alternative.edit', [
-            'alternative' => $alternative,
-            'majorsWithCriteria' => $majorsWithCriteria,
-            'selectedSubs' => $selectedSubs,
-        ]);
-    }
-
+    // ====================================================================
+    // 🎯 STORE: Menyimpan Data Sub Kriteria yang Dipilih (Mass Insertion)
+    // ====================================================================
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'student_id' => 'required|numeric|unique:alternatives,student_id|exists:students,id',
+            // Input dari View adalah: name="criteria[KriteriaID]" -> nilainya adalah SubCriteria ID
             'criteria' => 'required|array',
             'criteria.*' => 'required|numeric|exists:sub_criterias,id',
         ]);
@@ -140,49 +86,154 @@ class AlternativeController extends Controller
             'student_id' => $request->student_id,
         ]);
 
-        foreach ($request->criteria as $subCriteriaId) {
-            $sub = SubCriteria::find($subCriteriaId);
+        // Persiapkan data untuk Mass Insertion
+        $alternativeValuesToCreate = [];
+        if ($request->has('criteria')) {
+            // Ambil semua SubCriteria ID yang dipilih oleh pengguna dari semua Kriteria
+            $subCriteriaIds = array_values($request->criteria);
 
-            AlternativeValue::create([
-                'alternative_id'    => $alternative->id,
-                'sub_criteria_id'   => $subCriteriaId,
-                'value'             => $sub->value ?? 0,
-            ]);
+            // Query satu kali untuk mengambil semua data SubCriteria yang dipilih (Efisiensi)
+            $selectedSubCriterias = SubCriteria::whereIn('id', $subCriteriaIds)->get()->keyBy('id');
+            $now = Carbon::now();
+
+            foreach ($subCriteriaIds as $subCriteriaId) {
+                $sub = $selectedSubCriterias->get($subCriteriaId);
+
+                if ($sub) {
+                    $alternativeValuesToCreate[] = [
+                        'alternative_id'    => $alternative->id,
+                        'sub_criteria_id'   => $subCriteriaId,
+                        'value'             => $sub->value ?? 0,
+                        'created_at'        => $now,
+                        'updated_at'        => $now,
+                    ];
+                }
+            }
+        }
+
+        // Simpan semua dalam satu query (Mass Insertion)
+        if (!empty($alternativeValuesToCreate)) {
+            AlternativeValue::insert($alternativeValuesToCreate);
         }
 
         return redirect()->route('admin.alternative.index')->with('success', 'Data Alternatif berhasil disimpan.');
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    // ====================================================================
+    // 🎯 EDIT: Mengambil SEMUA Jurusan dan Nilai yang Sudah Dipilih
+    // ====================================================================
+    public function edit(Alternative $alternative): View
     {
-        $alternative = Alternative::findOrFail($id);
+        $alternative->load('student');
 
+        // Peta Sub Criteria ID yang sudah dipilih, dikelompokkan berdasarkan Criteria ID
+        $selectedSubs = $alternative->values
+            ->pluck('sub_criteria_id', 'subCriteria.criteria_id')
+            ->toArray();
+
+        // Mengambil SEMUA Jurusan beserta relasi Kriteria dan Sub Kriteria untuk input
+        $majorsWithCriteria = Major::with([
+            'criteria.subject',
+            'criteria.subCriteria'
+        ])->get();
+
+        return view('admin.alternative.edit', [
+            'alternative' => $alternative,
+            'majorsWithCriteria' => $majorsWithCriteria,
+            'selectedSubs' => $selectedSubs,
+        ]);
+    }
+
+    // ====================================================================
+    // 🎯 UPDATE: Memperbarui Data Sub Kriteria yang Dipilih (Mass Insertion)
+    // ====================================================================
+    public function update(Request $request, Alternative $alternative): RedirectResponse
+    {
         $request->validate([
             'criteria' => 'required|array',
             'criteria.*' => 'required|numeric|exists:sub_criterias,id',
         ]);
 
-        AlternativeValue::where('alternative_id', $id)->delete();
+        try {
+            // Hapus nilai lama
+            AlternativeValue::where('alternative_id', $alternative->id)->delete();
 
-        foreach ($request->criteria as $subCriteriaId) {
-            $sub = SubCriteria::find($subCriteriaId);
+            // Persiapkan data untuk Mass Insertion
+            $alternativeValuesToCreate = [];
+            if ($request->has('criteria')) {
+                // Ambil semua SubCriteria ID yang dipilih oleh pengguna
+                $subCriteriaIds = array_values($request->criteria);
 
-            AlternativeValue::create([
-                'alternative_id'    => $alternative->id,
-                'sub_criteria_id'   => $subCriteriaId,
-                'value'             => $sub->value ?? 0,
-            ]);
+                // Query satu kali untuk mengambil semua data SubCriteria yang dipilih (Efisiensi)
+                $selectedSubCriterias = SubCriteria::whereIn('id', $subCriteriaIds)->get()->keyBy('id');
+                $now = Carbon::now();
+
+                foreach ($subCriteriaIds as $subCriteriaId) {
+                    $sub = $selectedSubCriterias->get($subCriteriaId);
+
+                    if ($sub) {
+                        $alternativeValuesToCreate[] = [
+                            'alternative_id'    => $alternative->id,
+                            'sub_criteria_id'   => $subCriteriaId,
+                            'value'             => $sub->value ?? 0,
+                            'created_at'        => $now,
+                            'updated_at'        => $now,
+                        ];
+                    }
+                }
+            }
+
+            // Simpan semua dalam satu query (Mass Insertion)
+            if (!empty($alternativeValuesToCreate)) {
+                AlternativeValue::insert($alternativeValuesToCreate);
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui Data Alternatif: ' . $e->getMessage());
         }
 
         return redirect()->route('admin.alternative.index')->with('success', 'Data Alternatif berhasil diubah.');
     }
 
+    // ====================================================================
+    // 🎯 SHOW: Menampilkan Detail Alternatif
+    // ====================================================================
+    public function show(Alternative $alternative): View
+    {
+        $alternative->load([
+            'student.major',
+            'values.subCriteria.criteria.major',
+            'values.subCriteria.criteria.subject',
+        ]);
+
+        // Mengelompokkan nilai berdasarkan Kriteria ID
+        // Ini mengasumsikan Kriteria ID unik untuk setiap mata pelajaran yang dinilai.
+        $groupedValues = $alternative->values
+            ->groupBy('subCriteria.criteria.id');
+
+        $uniqueCriteriaValues = collect();
+        foreach ($groupedValues as $criteriaId => $valuesGroup) {
+            $value = $valuesGroup->first();
+
+            $uniqueCriteriaValues->push([
+                'criteria'          => $value->subCriteria->criteria, // Mengandung subject, major, attribute_type
+                'sub_criteria_name' => $value->subCriteria->name,
+                'value_spk'         => $value->subCriteria->value,
+            ]);
+        }
+
+        return view('admin.alternative.show', [
+            'alternative' => $alternative,
+            'uniqueCriteriaValues' => $uniqueCriteriaValues,
+        ]);
+    }
+
+    // ====================================================================
+    // 🎯 DESTROY: Menghapus Alternatif
+    // ====================================================================
     public function destroy($id): RedirectResponse
     {
         $alternative = Alternative::findOrFail($id);
-
         $alternative->delete();
-
         return redirect()->route('admin.alternative.index')->with('success', 'Data Alternatif berhasil dihapus.');
     }
 }

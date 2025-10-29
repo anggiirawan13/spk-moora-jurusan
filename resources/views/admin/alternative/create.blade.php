@@ -15,6 +15,7 @@
                 <form action="{{ route('admin.alternative.store') }}" method="POST">
                     @csrf
 
+                    {{-- BAGIAN 1: PEMILIHAN SISWA --}}
                     <div class="form-group">
                         <label for="student_id">Pilih Siswa (Alternatif)</label>
                         <select class="form-control @error('student_id') is-invalid @enderror" name="student_id"
@@ -36,6 +37,11 @@
                     <hr>
                     <h5 class="font-weight-bold text-info mt-4 mb-3">Input Nilai Rapor Berdasarkan Jurusan & Kriteria:</h5>
 
+
+                    {{-- BAGIAN 2: INPUT NILAI DENGAN COLLAPSE GANDA --}}
+
+                    {{-- LOOP UTAMA: JURUSAN (LAPISAN 1 - COLLAPSE JURUSAN) --}}
+                    {{-- Pastikan variabel di Controller bernama $majorsWithCriteria --}}
                     @forelse ($majorsWithCriteria as $major)
                         @php
                             $majorCollapseId = 'major-input-' . $major->id;
@@ -43,6 +49,7 @@
 
                         <div class="card shadow mb-4 border-left-success">
 
+                            {{-- TOMBOL TOGGLE JURUSAN --}}
                             <a href="#{{ $majorCollapseId }}" 
                                class="card-header py-3 d-flex justify-content-between align-items-center collapsed text-decoration-none" 
                                data-toggle="collapse" 
@@ -54,9 +61,11 @@
                                 </h6>
                             </a>
                             
+                            {{-- KONTEN COLLAPSIBLE JURUSAN --}}
                             <div id="{{ $majorCollapseId }}" class="collapse">
                                 <div class="card-body">
                                     
+                                    {{-- LOOP BERSARANG: KRITERIA (LAPISAN 2 - COLLAPSE KRITERIA) --}}
                                     @forelse ($major->criteria as $k)
                                         @php
                                             $criteriaCollapseId = 'criteria-input-' . $k->id;
@@ -64,6 +73,7 @@
 
                                         <div class="card mb-3 border-left-primary">
                                             
+                                            {{-- HEADER KRITERIA (TOGGLE) --}}
                                             <a href="#{{ $criteriaCollapseId }}"
                                                 class="card-header py-2 d-flex justify-content-between align-items-center collapsed text-decoration-none"
                                                 data-toggle="collapse" aria-expanded="false"
@@ -74,11 +84,13 @@
                                                 </h6>
                                             </a>
                                             
+                                            {{-- KONTEN INPUT (COLLAPSIBLE) --}}
                                             <div id="{{ $criteriaCollapseId }}" class="collapse">
                                                 <div class="card-body">
                                                     <div class="form-group">
                                                         <label for="criteria_{{ $k->id }}">Pilih Nilai Rapor (Skala Sub Kriteria)</label>
 
+                                                        {{-- PENTING: NAME INPUT MENGIRIMKAN SUB CRITERIA ID DENGAN KEY KRITERIA ID --}}
                                                         <select class="form-control @error('criteria.' . $k->id) is-invalid @enderror"
                                                             name="criteria[{{ $k->id }}]" id="criteria_{{ $k->id }}" required>
                                                             <option value="" disabled selected>-- Pilih Skala Nilai --</option>
@@ -108,7 +120,7 @@
                                     @endforelse
                                     
                                 </div>
-                            </div>
+                            </div> {{-- Akhir Konten Collapsible Jurusan --}}
 
                         </div>
                     @empty

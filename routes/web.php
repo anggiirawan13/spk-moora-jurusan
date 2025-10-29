@@ -9,12 +9,9 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\CriteriaController;
 use App\Http\Controllers\Admin\SubCriteriaController;
 use App\Http\Controllers\Admin\AlternativeController;
-use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\CalculationController;
 use App\Http\Controllers\Admin\MajorController;
 use App\Http\Controllers\Admin\SubjectController;
-use App\Http\Controllers\Admin\FuelTypeController;
-use App\Http\Controllers\Admin\TransmissionTypeController;
 
 Auth::routes();
 

@@ -20,22 +20,51 @@
 
         <div class="card-body">
 
+            {{-- --- PENYESUAIAN DI SINI: MENAMPILKAN KRITERIA UNIK & DETAIL JURUSAN --- --}}
             <h6 class="font-weight-bold mb-3 text-secondary">
-                <i class="fas fa-info-circle"></i> Kriteria yang Digunakan Saat Ini:
+                <i class="fas fa-info-circle"></i> Kriteria & Jurusan yang Terlibat:
             </h6>
-            <div class="mb-4 p-3 border rounded" style="max-height: 150px; overflow-y: auto;">
-                <p class="mb-0">
-                    @forelse ($criterias as $criteria)
+            <div class="mb-4 p-3 border rounded" style="max-height: 200px; overflow-y: auto;">
+                
+                @php
+                    // Kelompokkan kriteria berdasarkan nama Mata Pelajaran (Subject) untuk melihat kriteria unik.
+                    $uniqueCriterias = $criterias->groupBy('subject_id');
+                @endphp
+                
+                <h6 class="font-weight-bold mb-2">Kriteria Mata Pelajaran (Dasar Penilaian):</h6>
+                <p class="mb-3">
+                    @forelse ($uniqueCriterias as $subjectId => $criteriaGroup)
+                        @php
+                            // Ambil kriteria pertama untuk mendapatkan nama mata pelajaran
+                            $criteria = $criteriaGroup->first();
+                            // Kumpulkan semua Jurusan yang menggunakan kriteria ini
+                            $majorsUsing = $criteriaGroup->pluck('major.code')->filter()->unique()->implode(', ');
+                        @endphp
+                        
                         <span class="badge badge-info mr-2 mb-1 p-2"
-                            title="Jurusan: {{ $criteria->major->name ?? 'N/A' }} | Bobot: {{ $criteria->weight }}">
-                            {{ $criteria->subject->code ?? 'N/A' }}
-                            ({{ $criteria->major->code ?? 'N/A' }}) - Bobot: {{ $criteria->weight }}
+                            title="Digunakan oleh Jurusan: {{ $majorsUsing }}">
+                            {{ $criteria->subject->name ?? 'N/A' }}
+                            ({{ $criteria->name }})
                         </span>
                     @empty
                         <em class="text-muted">Tidak ada Kriteria yang terdaftar.</em>
                     @endforelse
                 </p>
+
+                <h6 class="font-weight-bold mb-2 mt-3">Detail Bobot per Jurusan:</h6>
+                <p class="mb-0">
+                    @foreach ($criterias as $criteria)
+                        <span class="badge badge-warning mr-2 mb-1 p-2"
+                            title="Kriteria: {{ $criteria->subject->name ?? 'N/A' }}">
+                            {{ $criteria->subject->code ?? 'N/A' }} 
+                            <i class="fas fa-arrow-right"></i> {{ $criteria->major->code ?? 'N/A' }}
+                            (Bobot: {{ $criteria->weight }})
+                        </span>
+                    @endforeach
+                </p>
+                
             </div>
+            {{-- --- AKHIR PENYESUAIAN HEADER KRITERIA --- --}}
 
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" id="dataTable" cellspacing="0">

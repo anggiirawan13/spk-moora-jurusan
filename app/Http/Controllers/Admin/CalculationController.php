@@ -119,7 +119,7 @@ class CalculationController extends Controller
             $bestResult = $altResults->sortByDesc('yi_value')->first();
 
             // Ambil Jurusan saat ini (dari relasi model)
-            $currentMajor = optional($alt->major)->name ?? 'Belum Ditentukan';
+            $currentMajor = optional($alt->student->major)->name ?? 'Belum Ditentukan';
 
             // Ambil Jurusan Rekomendasi
             $recommendedMajor = 'N/A';

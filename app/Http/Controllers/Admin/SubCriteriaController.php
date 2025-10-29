@@ -8,6 +8,7 @@ use App\Models\Criteria;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class SubCriteriaController extends Controller
@@ -44,20 +45,56 @@ class SubCriteriaController extends Controller
         return view('admin.sub_criteria.create', compact('criteria'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'criteria_id' => 'required|exists:criterias,id',
-            'name' => 'required|string|max:255',
-            'value' => 'required|integer|min:1',
+            // Validasi bahwa minimal satu checkbox dipilih
+            'sub_criteria_to_add' => 'required|array|min:1',
         ]);
 
-        try {
-            SubCriteria::create($request->only(['criteria_id', 'name', 'value']));
+        $criteriaId = $request->criteria_id;
+        $selectedSubs = $request->sub_criteria_to_add;
 
-            return redirect()->route('admin.subcriteria.index')->with('success', 'Sub Kriteria berhasil ditambahkan.');
-        } catch (QueryException $e) {
-            return back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data. Coba lagi.');
+        // Hardcode data yang tersedia
+        $fixedSubCriteria = [
+            5 => 'Sangat Baik',
+            4 => 'Baik',
+            3 => 'Cukup',
+            2 => 'Kurang',
+            1 => 'Sangat Kurang',
+        ];
+
+        try {
+            $count = 0;
+            foreach ($selectedSubs as $value => $isChecked) {
+                // Pastikan nilai value ada di fixedSubCriteria (untuk keamanan)
+                if (array_key_exists($value, $fixedSubCriteria)) {
+                    // Cek duplikasi di DB (nilai $value adalah Nilai SPK)
+                    $isExisting = SubCriteria::where('criteria_id', $criteriaId)
+                        ->where('value', $value)
+                        ->exists();
+
+                    if (!$isExisting) {
+                        SubCriteria::create([
+                            'criteria_id' => $criteriaId,
+                            'name' => $fixedSubCriteria[$value],
+                            'value' => $value,
+                        ]);
+                        $count++;
+                    }
+                }
+            }
+
+            if ($count > 0) {
+                return redirect()->route('admin.subcriteria.index', $criteriaId)
+                    ->with('success', "$count Skala Nilai berhasil ditambahkan ke kriteria.");
+            }
+
+            return redirect()->route('admin.subcriteria.index', $criteriaId)
+                ->with('info', "Tidak ada Skala Nilai baru yang ditambahkan.");
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menyimpan Skala Nilai. Error: ' . $e->getMessage());
         }
     }
 
@@ -73,26 +110,29 @@ class SubCriteriaController extends Controller
         return view('admin.sub_criteria.edit', compact('subCriteria'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, SubCriteria $sub_criterion)
     {
-        $this->validate($request, [
-            'criteria_id' => 'required|exists:criterias,id',
-            'name' => 'required|string|max:255',
-            'value' => 'required|integer|min:1',
+        $request->validate([
+            // ... rules
+            // Gunakan $sub_criterion->id dalam ignore
+            Rule::unique('sub_criterias')->ignore($sub_criterion->id)->where(function ($query) use ($request) {
+                return $query->where('criteria_id', $request->criteria_id);
+            }),
         ]);
 
         try {
-            $subCriteria = [
+            // Lakukan update data pada $sub_criterion
+            $sub_criterion->update([
                 'name' => $request->name,
-                'value' => $request->value
-            ];
-
-            SubCriteria::whereId($id)->update($subCriteria);
-
-            return redirect()->route('admin.subcriteria.index')->with('success', 'Data berhasil diubah');
-        } catch (QueryException $e) {
-            return back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data. Coba lagi.');
+                'value' => $request->value,
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui Skala Nilai: ' . $e->getMessage());
         }
+
+        // Menggunakan nama route yang benar: 'subcriteria.index'
+        return redirect()->route('admin.subcriteria.index', $request->criteria_id)
+            ->with('success', 'Skala Nilai berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse
