@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AlternativeValue extends Model
 {
@@ -17,13 +18,18 @@ class AlternativeValue extends Model
         'value'
     ];
 
-    public function alternative()
+    public function alternative(): BelongsTo
     {
         return $this->belongsTo(Alternative::class, 'alternative_id');
     }
 
-    public function subCriteria()
+    public function subCriteria(): BelongsTo
     {
         return $this->belongsTo(SubCriteria::class, 'sub_criteria_id');
+    }
+
+    public function criteria(): BelongsTo
+    {
+        return $this->belongsTo(Criteria::class, 'criteria_id');
     }
 }

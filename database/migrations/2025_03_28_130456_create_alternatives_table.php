@@ -9,7 +9,13 @@ return new class extends Migration {
     {
         Schema::create('alternatives', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onUpdate('cascade')->onDelete('cascade');
+            
+            $table->foreignId('student_id')
+                ->constrained('students')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->unique('student_id');
             $table->timestamps();
         });
     }
@@ -19,4 +25,3 @@ return new class extends Migration {
         Schema::dropIfExists('alternatives');
     }
 };
-

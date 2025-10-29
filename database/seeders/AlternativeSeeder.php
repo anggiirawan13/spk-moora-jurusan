@@ -4,41 +4,48 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class AlternativeSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
-
         $studentIds = DB::table('students')->pluck('id');
 
+        $criteriaIds = DB::table('criterias')
+            ->join('sub_criterias', 'criterias.id', '=', 'sub_criterias.criteria_id')
+            ->distinct()
+            ->pluck('criterias.id');
+
+        if ($criteriaIds->isEmpty()) {
+            echo "Peringatan: Tidak ada Kriteria dengan Sub Kriteria. Tidak ada Alternative Value yang dibuat.\n";
+            return;
+        }
+
         foreach ($studentIds as $studentId) {
-            $alternativeId = DB::table('alternatives')->insertGetId([
-                'student_id' => $studentId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            try {
+                $alternativeId = DB::table('alternatives')->insertGetId([
+                    'student_id' => $studentId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                continue;
+            }
 
-            $criteriaList = DB::table('criterias')->get();
-
-            foreach ($criteriaList as $criteria) {
+            foreach ($criteriaIds as $criteriaId) {
                 $subCriteria = DB::table('sub_criterias')
-                    ->where('criteria_id', $criteria->id)
+                    ->where('criteria_id', $criteriaId)
                     ->inRandomOrder()
                     ->first();
 
-                if (!$subCriteria) {
-                    continue;
-                }
+                if (!$subCriteria) continue;
 
                 DB::table('alternative_values')->insert([
-                    'alternative_id'   => $alternativeId,
-                    'sub_criteria_id'  => $subCriteria->id,
-                    'value'            => $subCriteria->value ?? $faker->numberBetween(1, 5),
-                    'created_at'       => now(),
-                    'updated_at'       => now(),
+                    'alternative_id'  => $alternativeId,
+                    'sub_criteria_id' => $subCriteria->id,
+                    'value'           => $subCriteria->value,
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
                 ]);
             }
         }

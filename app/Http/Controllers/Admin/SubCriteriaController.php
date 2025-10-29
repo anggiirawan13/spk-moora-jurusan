@@ -8,22 +8,43 @@ use App\Models\Criteria;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class SubCriteriaController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $criteria = Criteria::with('subCriteria')->orderBy('code')->get();
-        return view('admin.sub_criteria.index', compact('criteria'));
+        $criteriaCollection = Criteria::with(['subCriteria', 'major', 'subject'])
+            ->orderBy('major_id', 'asc')
+            ->orderBy('subject_id', 'asc')
+            ->get();
+
+        $groupedByMajor = $criteriaCollection->groupBy('major_id');
+
+        $majors = collect();
+        foreach ($groupedByMajor as $majorId => $criteriaGroup) {
+            $major = $criteriaGroup->first()->major;
+
+            $major->criteria = $criteriaGroup;
+
+            $majors->push($major);
+        }
+
+        return view('admin.sub_criteria.index', compact('majors'));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View | RedirectResponse
     {
-        $criteria = Criteria::findOrFail($request->criteria_id);
+        if (!$request->criteria_id) {
+            return redirect()->route('admin.criteria.index')->with('error', 'Pilih Kriteria (Mata Pelajaran) terlebih dahulu.');
+        }
+
+        $criteria = Criteria::with(['major', 'subject'])->findOrFail($request->criteria_id);
+
         return view('admin.sub_criteria.create', compact('criteria'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'criteria_id' => 'required|exists:criterias,id',
@@ -31,24 +52,28 @@ class SubCriteriaController extends Controller
             'value' => 'required|integer|min:1',
         ]);
 
-        SubCriteria::create($request->all());
+        try {
+            SubCriteria::create($request->only(['criteria_id', 'name', 'value']));
 
-        return redirect()->route('admin.subcriteria.index')->with('success', 'Sub Kriteria berhasil ditambahkan.');
+            return redirect()->route('admin.subcriteria.index')->with('success', 'Sub Kriteria berhasil ditambahkan.');
+        } catch (QueryException $e) {
+            return back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data. Coba lagi.');
+        }
     }
 
-    public function show($id)
+    public function show($id): View
     {
-        $subCriteria = SubCriteria::findOrFail($id);
+        $subCriteria = SubCriteria::with('criteria.major', 'criteria.subject')->findOrFail($id);
         return view('admin.sub_criteria.show', compact('subCriteria'));
     }
 
-    public function edit($id)
+    public function edit($id): View
     {
-        $subCriteria = SubCriteria::findorfail($id);
+        $subCriteria = SubCriteria::with('criteria.major', 'criteria.subject')->findOrFail($id);
         return view('admin.sub_criteria.edit', compact('subCriteria'));
     }
 
-     public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
             'criteria_id' => 'required|exists:criterias,id',
@@ -66,18 +91,14 @@ class SubCriteriaController extends Controller
 
             return redirect()->route('admin.subcriteria.index')->with('success', 'Data berhasil diubah');
         } catch (QueryException $e) {
-            if ($e->errorInfo[1] == 10062) {
-                return back()->withInput()->with('error', 'Kode sudah digunakan, gunakan kode lain.');
-            }
-
-            return back()->withInput()->with('error', 'Terjadi kesalahan, coba lagi.');
+            return back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data. Coba lagi.');
         }
     }
 
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        $criteria = SubCriteria::findorfail($id);
-        $criteria->delete();
+        $subCriteria = SubCriteria::findorfail($id);
+        $subCriteria->delete();
 
         return redirect()->route('admin.subcriteria.index')->with('success', 'Data berhasil dihapus');
     }

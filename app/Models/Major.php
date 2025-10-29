@@ -10,17 +10,22 @@ class Major extends Model
 {
     use HasFactory;
 
-    protected $table = 'majors'; 
+    protected $table = 'majors';
 
     protected $fillable = [
-        'code',       
-        'name',       
+        'code',
+        'name',
         'description',
-        'image_name', 
+        'image_name',
     ];
-    
+
     public function students(): HasMany
     {
         return $this->hasMany(Student::class, 'major_id');
+    }
+
+    public function criteria(): HasMany
+    {
+        return $this->hasMany(Criteria::class, 'major_id');
     }
 }
