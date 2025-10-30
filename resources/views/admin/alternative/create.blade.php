@@ -106,7 +106,7 @@
                                                         @enderror
 
                                                         @if($k->subCriteria->isEmpty())
-                                                            <small class="text-danger">**Peringatan:** Kriteria ini belum memiliki skala nilai (Sub Kriteria)
+                                                            <small class="text-danger">Peringatan: Kriteria ini belum memiliki skala nilai (Sub Kriteria)
                                                                 yang ditetapkan!</small>
                                                         @endif
                                                     </div>

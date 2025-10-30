@@ -32,7 +32,7 @@
                     <h6 class="font-weight-bold text-info mt-4 mb-3">
                         <i class="fas fa-check-circle"></i> Pilih Nilai Skala Baru:
                     </h6>
-                    <p class="text-secondary">Pilih satu nilai skala di bawah ini. Opsi yang **Sudah Dipakai** oleh Sub Kriteria lain pada Kriteria Induk ini tidak dapat dipilih.</p>
+                    <p class="text-secondary">Pilih satu nilai skala di bawah ini. Opsi yang Sudah Dipakai oleh Sub Kriteria lain pada Kriteria Induk ini tidak dapat dipilih.</p>
                     
                     @php
                         // Data sub kriteria hardcode yang tersedia
