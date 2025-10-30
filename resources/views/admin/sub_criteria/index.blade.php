@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Skala Konversi Nilai Rapor') {{-- Judul diubah agar lebih jelas --}}
+@section('title', 'Daftar Skala Konversi Nilai Rapor')
 
 @section('content')
 
@@ -8,7 +8,6 @@
         <div class="card-header py-3">
             <h5 class="m-0 font-weight-bold text-primary">Daftar Skala Konversi Nilai Rapor (Sub Kriteria) per Mata
                 Pelajaran</h5>
-            <p class="text-secondary mt-1 mb-0">Atur rentang nilai rapor yang akan dikonversi menjadi Nilai SPK (1-5).</p>
         </div>
     </div>
 
@@ -68,16 +67,19 @@
                                                     <th class="text-center" style="width: 50px;">No</th>
                                                     <th style="width: 250px;">Nama Skala</th>
                                                     {{-- KOLOM BARU --}}
-                                                    <th class="text-center" style="width: 200px;">Rentang Nilai Rapor</th>
+                                                    <th class="text-center" style="width: 20%;">Rentang Nilai Rapor</th>
                                                     {{-- END KOLOM BARU --}}
-                                                    <th class="text-center" style="width: 100px;">Nilai SPK</th>
-                                                    <th class="text-center" style="width: 200px;">Aksi</th>
+                                                    <th class="text-center" style="width: 7%;">Nilai SPK</th>
+                                                    <th class="text-center" style="width: 11%;">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {{-- Urutkan berdasarkan Nilai SPK (value) secara menurun agar Nilai Konversi 5 di
                                                 atas --}}
-                                                @forelse ($item->subCriteria->sortByDesc('value') as $sub)
+                                                @forelse ($item->subCriteria->sortByDesc('value') as $index => $sub)
+                                                    @php
+                                                        $isLastRows = $index >= count($item->subCriteria) - 5;
+                                                    @endphp
                                                     <tr>
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $sub->name }}</td>
@@ -90,24 +92,44 @@
                                                             <span class="badge badge-success p-2">{{ $sub->value }}</span>
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ route('admin.subcriteria.show', $sub->id) }}"
-                                                                class="btn btn-sm btn-info m-1">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
+                                                            {{-- KONDISI DROPUP BARU: Tambahkan 'dropup' jika berada di baris terakhir
+                                                            --}}
+                                                            <div class="dropdown no-arrow {{ $isLastRows ? 'dropup' : '' }}">
+                                                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                                                    id="dropdownMenuButton_{{ $sub->id }}" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    <i class="fas fa-ellipsis-v"></i>
+                                                                </button>
+                                                                {{-- Hapus 'animated--grow-in' untuk menghilangkan glitch animasi --}}
+                                                                <div class="dropdown-menu dropdown-menu-right shadow"
+                                                                    aria-labelledby="dropdownMenuButton_{{ $sub->id }}">
 
-                                                            @auth
-                                                                @if (auth()->user()->is_admin == 1)
-                                                                    <a href="{{ route('admin.subcriteria.edit', $sub->id) }}"
-                                                                        class="btn btn-sm btn-primary m-1">
-                                                                        <i class="fas fa-edit"></i>
+                                                                    {{-- Aksi Lihat (Show) --}}
+                                                                    <a href="{{ route('admin.subcriteria.show', $sub->id) }}"
+                                                                        class="dropdown-item text-info">
+                                                                        <i class="fas fa-fw fa-eye mr-2"></i> Lihat Detail
                                                                     </a>
 
-                                                                    <button type="button" class="btn btn-danger btn-sm m-1"
-                                                                        onclick="confirmDelete('{{ route('admin.subcriteria.destroy', $sub->id) }}', '{{ $sub->name }}')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                @endif
-                                                            @endauth
+                                                                    @auth
+                                                                        @if (auth()->user()->is_admin == 1)
+                                                                            <div class="dropdown-divider"></div>
+
+                                                                            {{-- Aksi Edit --}}
+                                                                            <a href="{{ route('admin.subcriteria.edit', $sub->id) }}"
+                                                                                class="dropdown-item text-primary">
+                                                                                <i class="fas fa-fw fa-edit mr-2"></i> Edit
+                                                                            </a>
+
+                                                                            {{-- Aksi Hapus --}}
+                                                                            <button type="button" class="dropdown-item text-danger" @php
+                                                                            @endphp
+                                                                                onclick="confirmDelete('{{ route('admin.subcriteria.destroy', $sub->id) }}', '{{ $sub->name }}')">
+                                                                                <i class="fas fa-fw fa-trash mr-2"></i> Hapus
+                                                                            </button>
+                                                                        @endif
+                                                                    @endauth
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @empty

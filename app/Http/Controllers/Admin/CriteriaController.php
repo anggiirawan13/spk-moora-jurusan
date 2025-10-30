@@ -32,9 +32,9 @@ class CriteriaController extends Controller
     {
         $request->validate([
             'major_id'       => 'required|exists:majors,id',
-            'subject_id'     => 'required|exists:subjects,id|unique:criteria,subject_id,NULL,id,major_id,' . $request->major_id,
+            'subject_id'     => 'required|exists:subjects,id|unique:criterias,subject_id,NULL,id,major_id,' . $request->major_id,
             'weight'         => 'required|numeric|min:0.01|max:1',
-            'attribute_type' => 'required|in:benefit,cost'
+            'attribute_type' => 'required|in:Benefit,Cost'
         ], [
             'subject_id.unique' => 'Mata pelajaran ini sudah dijadikan kriteria untuk jurusan ini.',
         ]);
@@ -75,7 +75,7 @@ class CriteriaController extends Controller
             'major_id'       => 'required|exists:majors,id',
             'subject_id'     => 'required|exists:subjects,id|unique:criteria,subject_id,' . $id . ',id,major_id,' . $request->major_id,
             'weight'         => 'required|numeric|min:0.01|max:1',
-            'attribute_type' => 'required|in:benefit,cost',
+            'attribute_type' => 'required|in:Benefit,Cost',
         ], [
             'subject_id.unique' => 'Mata pelajaran ini sudah dijadikan kriteria untuk jurusan ini.',
         ]);
