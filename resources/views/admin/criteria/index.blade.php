@@ -50,17 +50,17 @@
                                         <td>{{ ucwords($criteria->attribute_type) }}</td>
                                         <td>
                                             {{-- Tombol Aksi --}}
-                                            <a href="{{ route('admin.criteria.show', $criteria->id) }}" class="btn btn-sm btn-info">
+                                            <a href="{{ route('admin.criteria.show', $criteria->id) }}" class="btn btn-sm btn-info m-1">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('admin.criteria.edit', $criteria->id) }}" class="btn btn-sm btn-warning">
+                                            <a href="{{ route('admin.criteria.edit', $criteria->id) }}" class="btn btn-sm btn-primary m-1">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('admin.criteria.destroy', $criteria->id) }}" method="POST"
                                                 class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                <button type="submit" class="btn btn-sm btn-danger m-1"
                                                     onclick="return confirm('Apakah Anda yakin ingin menghapus kriteria ini?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>

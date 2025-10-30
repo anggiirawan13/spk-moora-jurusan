@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AlternativeController;
 use App\Http\Controllers\Admin\CalculationController;
 use App\Http\Controllers\Admin\MajorController;
 use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\RaporController;
 
 Auth::routes();
 
@@ -45,5 +46,19 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/criteria', CriteriaController::class)->names('criteria');
         Route::resource('/sub-criteria', SubCriteriaController::class)->names('subcriteria');
         Route::resource('/alternative', AlternativeController::class)->names('alternative');
+        Route::post('/rapor/convert-value', [RaporController::class, 'convertValue'])->name('rapor.convert-value');
+        Route::resource('/rapor', RaporController::class)
+            ->names('rapor')
+            ->parameters([
+                'rapor' => 'student'
+            ])
+            ->only(
+                [
+                    'index',
+                    'show',
+                    'update'
+                ]
+            );
+        Route::post('/rapor/{student}', [RaporController::class, 'update'])->name('rapor.store_alias');
     });
 });

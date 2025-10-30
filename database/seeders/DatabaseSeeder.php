@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             CriteriaSeeder::class,
             SubCriteriaSeeder::class,
             AlternativeSeeder::class,
+            RaporValueSeeder::class,
         ]);
 
         Schema::enableForeignKeyConstraints();

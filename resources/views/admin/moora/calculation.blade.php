@@ -21,9 +21,6 @@
     @endphp
 
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">📊 Hasil Perhitungan MOORA (Per Jurusan)</h1>
-        <hr>
-
         <a href="{{ route('admin.moora.download_pdf') }}" class="btn btn-success mb-4 shadow">
             <i class="fas fa-download"></i> Download Laporan PDF
         </a>
@@ -99,10 +96,6 @@
 
         <hr/>
         
-        {{-- ========================================================================= --}}
-        Detail Perhitungan MOORA per Jurusan
-        {{-- ========================================================================= --}}
-
         @foreach ($allCalculations as $majorId => $calc)
             @php
                 $major = $majors->firstWhere('id', $majorId);

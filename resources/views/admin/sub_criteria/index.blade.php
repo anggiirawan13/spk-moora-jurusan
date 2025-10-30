@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Sub Kriteria Penjurusan')
+@section('title', 'Daftar Skala Konversi Nilai Rapor') {{-- Judul diubah agar lebih jelas --}}
 
 @section('content')
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h5 class="m-0 font-weight-bold text-primary">Daftar Skala Nilai (Sub Kriteria) per Mata Pelajaran</h5>
+            <h5 class="m-0 font-weight-bold text-primary">Daftar Skala Konversi Nilai Rapor (Sub Kriteria) per Mata
+                Pelajaran</h5>
+            <p class="text-secondary mt-1 mb-0">Atur rentang nilai rapor yang akan dikonversi menjadi Nilai SPK (1-5).</p>
         </div>
     </div>
 
@@ -23,8 +25,8 @@
                 class="card-header py-3 d-flex justify-content-between align-items-center collapsed text-decoration-none"
                 data-toggle="collapse" aria-expanded="false" aria-controls="{{ $majorCollapseId }}">
                 <h4 class="m-0 font-weight-bold text-success">
-                    <i class="fas fa-graduation-cap"></i> Jurusan:
-                    <span class="font-weight-bold">{{ $major->name ?? 'N/A' }} ({{ $major->code ?? 'N/A' }})</span>
+                    <i class="fas fa-graduation-cap"></i> <span class="font-weight-bold">{{ $major->name ?? 'N/A' }}
+                        ({{ $major->code ?? 'N/A' }})</span>
                 </h4>
             </a>
 
@@ -44,12 +46,13 @@
                                     class="d-flex align-items-center text-decoration-none w-100 collapsed">
                                     <h6 class="m-0 font-weight-bold text-primary mr-auto">
                                         <i class="fas fa-book-open"></i>
-                                        Kriteria: {{ $item->subject->name ?? 'N/A' }}
+                                        {{ $item->subject->name ?? 'N/A' }}
                                         ({{ $item->subject->code ?? 'N/A' }})
-                                        | Bobot: {{ $item->weight }}
+                                        ({{ $item->weight }})
                                     </h6>
                                 </a>
 
+                                {{-- Link Tambah Skala --}}
                                 <a href="{{ route('admin.subcriteria.create', ['criteria_id' => $item->id]) }}"
                                     class="btn btn-success btn-sm ml-3">
                                     <i class="fas fa-plus"></i> Tambah
@@ -63,17 +66,29 @@
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th class="text-center" style="width: 50px;">No</th>
-                                                    <th>Nama Sub Kriteria (Skala)</th>
-                                                    <th class="text-center" style="width: 100px;">Nilai Konversi</th>
+                                                    <th style="width: 250px;">Nama Skala</th>
+                                                    {{-- KOLOM BARU --}}
+                                                    <th class="text-center" style="width: 200px;">Rentang Nilai Rapor</th>
+                                                    {{-- END KOLOM BARU --}}
+                                                    <th class="text-center" style="width: 100px;">Nilai SPK</th>
                                                     <th class="text-center" style="width: 200px;">Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse ($item->subCriteria as $sub)
+                                                {{-- Urutkan berdasarkan Nilai SPK (value) secara menurun agar Nilai Konversi 5 di
+                                                atas --}}
+                                                @forelse ($item->subCriteria->sortByDesc('value') as $sub)
                                                     <tr>
                                                         <td class="text-center">{{ $loop->iteration }}</td>
                                                         <td>{{ $sub->name }}</td>
-                                                        <td class="text-center">{{ $sub->value }}</td>
+                                                        {{-- TAMPILKAN DATA BARU --}}
+                                                        <td class="text-center font-weight-bold text-info">
+                                                            {{ $sub->min_value }} - {{ $sub->max_value }}
+                                                        </td>
+                                                        {{-- END TAMPILKAN DATA BARU --}}
+                                                        <td class="text-center">
+                                                            <span class="badge badge-success p-2">{{ $sub->value }}</span>
+                                                        </td>
                                                         <td class="text-center">
                                                             <a href="{{ route('admin.subcriteria.show', $sub->id) }}"
                                                                 class="btn btn-sm btn-info m-1">
@@ -97,8 +112,8 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted">
-                                                            Belum ada skala nilai yang ditetapkan untuk kriteria ini.
+                                                        <td colspan="5" class="text-center text-muted"> {{-- colspan ditambah 1 --}}
+                                                            Belum ada skala nilai konversi yang ditetapkan untuk kriteria ini.
                                                         </td>
                                                     </tr>
                                                 @endforelse
@@ -135,7 +150,7 @@
             function confirmDelete(url, name) {
                 Swal.fire({
                     title: 'Konfirmasi Hapus',
-                    html: `Apakah Anda yakin ingin menghapus <strong>${name}</strong>?`,
+                    html: `Apakah Anda yakin ingin menghapus Skala Konversi <strong>${name}</strong>?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Hapus',

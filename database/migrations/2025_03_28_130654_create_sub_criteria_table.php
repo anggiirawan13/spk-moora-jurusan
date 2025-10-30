@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->foreignId('criteria_id')->constrained('criterias')->onDelete('cascade');
             $table->string('name');
             $table->unsignedInteger('value');
+            $table->float('min_value')->nullable();
+            $table->float('max_value')->nullable();
             $table->timestamps();
         });
     }
