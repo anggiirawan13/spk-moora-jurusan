@@ -26,6 +26,22 @@
             background-size: cover;
             min-height: 400px;
         }
+        
+        /* New styles for centering */
+        body.bg-gradient-primary {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .container {
+            flex: 1;
+        }
+        
+        .card.my-5 {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
     </style>
 </head>
 
@@ -70,9 +86,9 @@
                                     <div class="text-center">
                                         <a class="small" href="{{ route('password.request') }}">Forgot Password?</a>
                                     </div>
-                                    <div class="text-center">
+                                    {{-- <div class="text-center">
                                         <a class="small" href="{{ route('register') }}">Create an Account!</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

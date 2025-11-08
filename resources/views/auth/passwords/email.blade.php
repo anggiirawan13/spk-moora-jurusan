@@ -13,6 +13,29 @@
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Centering styles */
+        body.bg-gradient-primary {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .container {
+            flex: 1;
+        }
+        
+        .card.my-5 {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+        
+        /* Additional styling for better appearance */
+        .card {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-primary">
