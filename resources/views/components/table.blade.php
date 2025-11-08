@@ -39,70 +39,83 @@
                 </tfoot>
                 <tbody>
                     @forelse ($data as $key => $item)
-                        {{-- Logika untuk menentukan apakah ini salah satu dari 5 baris terakhir --}}
-                        @php
-                            $isLastRows = $key >= count($data) - 5;
-                        @endphp
-                        <tr>
-                            <td>{{ $key + 1 }}</td>
+                        <tr class="transition-all">
+                            <td class="text-center text-muted">{{ $key + 1 }}</td>
                             @foreach ($columns as $column)
                                 <td>
-                                    {{-- Handle Kolom Spesial (is_admin, created_at, dll.) --}}
                                     @if ($column['field'] === 'is_admin')
-                                        <span class="badge {{ $item['is_admin'] ? 'badge-danger' : 'badge-primary' }}">
+                                        <span class="badge badge-pill {{ $item['is_admin'] ? 'badge-danger' : 'badge-success' }}">
+                                            <i class="fas {{ $item['is_admin'] ? 'fa-user-shield' : 'fa-user' }} mr-1"></i>
                                             {{ $item['is_admin'] ? 'Admin' : 'User' }}
                                         </span>
-                                    @elseif ($column['field'] === 'created_at')
-                                        {{ \Carbon\Carbon::parse($item['created_at'])->format('d M Y') }}
+                                    @elseif ($column['field'] === 'is_active' || $column['field'] === 'is_available')
+                                        <span class="badge badge-pill {{ $item[$column['field']] ? 'badge-success' : 'badge-secondary' }}">
+                                            <i class="fas {{ $item[$column['field']] ? 'fa-check' : 'fa-times' }} mr-1"></i>
+                                            {{ $item[$column['field']] ? 'Aktif' : 'Nonaktif' }}
+                                        </span>
+                                    @elseif (in_array($column['field'], ['created_at', 'updated_at']))
+                                        <span class="text-muted small">
+                                            <i class="far fa-clock mr-1"></i>
+                                            {{ \Carbon\Carbon::parse($item[$column['field']])->format('d M Y H:i') }}
+                                        </span>
+                                    @elseif (strpos($column['field'], 'score') !== false)
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 mr-2" style="height: 6px;">
+                                                <div class="progress-bar bg-success" 
+                                                     role="progressbar" 
+                                                     style="width: {{ $item[$column['field']] }}%"
+                                                     aria-valuenow="{{ $item[$column['field']] }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                </div>
+                                            </div>
+                                            <span class="badge badge-light">{{ $item[$column['field']] }}</span>
+                                        </div>
                                     @else
-                                        {{-- Tampilkan data umum --}}
-                                        {{ $item[$column['field']] }}
+                                        @if (!empty($column['html']) && $column['html'])
+                                            {!! $item[$column['field']] !!}
+                                        @elseif (!empty($column['php']) && $column['php'])
+                                            {{ $column['field'] }}
+                                        @else
+                                            {{ $item[$column['field']] ?? '-' }}
+                                        @endif
                                     @endif
                                 </td>
                             @endforeach
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{{ route($showRoute, $item['id']) }}" 
+                                       class="btn btn-info btn-sm btn-action m-1"
+                                       data-toggle="tooltip" title="Lihat Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
 
-                            {{-- KOLOM AKSI (Menggunakan Dropdown) --}}
-                            <td class="text-center">
-                                {{-- KONDISI DROPUP BARU: Tambahkan 'dropup' jika berada di baris terakhir --}}
-                                <div class="dropdown no-arrow {{ $isLastRows ? 'dropup' : '' }}">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-                                        id="dropdownMenuButton_{{ $item['id'] }}" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                    {{-- Hapus 'animated--grow-in' untuk menghilangkan glitch animasi --}}
-                                    <div class="dropdown-menu dropdown-menu-right shadow"
-                                        aria-labelledby="dropdownMenuButton_{{ $item['id'] }}">
+                                    @auth
+                                        @if (auth()->user()->is_admin == 1)
+                                            <a href="{{ route($editRoute, $item['id']) }}" 
+                                               class="btn btn-primary btn-sm btn- m-1"
+                                               data-toggle="tooltip" title="Edit Data">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
 
-                                        {{-- Aksi Lihat (Show) --}}
-                                        <a href="{{ route($showRoute, $item['id']) }}" class="dropdown-item text-info">
-                                            <i class="fas fa-fw fa-eye mr-2"></i> Lihat Detail
-                                        </a>
-
-                                        @auth
-                                            @if (auth()->user()->is_admin == 1)
-                                                <div class="dropdown-divider"></div>
-
-                                                {{-- Aksi Edit --}}
-                                                <a href="{{ route($editRoute, $item['id']) }}" class="dropdown-item text-primary">
-                                                    <i class="fas fa-fw fa-edit mr-2"></i> Edit
-                                                </a>
-
-                                                {{-- Aksi Hapus --}}
-                                                <button type="button" class="dropdown-item text-danger"
-                                                    onclick="confirmDelete('{{ route($deleteRoute, $item['id']) }}', '{{ $item[$columns[0]['field']] }}')">
-                                                    <i class="fas fa-fw fa-trash mr-2"></i> Hapus
-                                                </button>
-                                            @endif
-                                        @endauth
-                                    </div>
+                                            <button type="button" 
+                                                    class="btn btn-danger btn-sm btn-action m-1"
+                                                    onclick="confirmDelete('{{ route($deleteRoute, $item['id']) }}', '{{ $item[$columns[0]['field']] ?? $item['name'] ?? 'Data' }}')"
+                                                    data-toggle="tooltip" title="Hapus Data">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endif
+                                    @endauth
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ count($columns) + 2 }}" class="text-center">
-                                <i class="fas fa-info-circle"></i> Data Kosong
+                            <td colspan="{{ count($columns) + 2 }}" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p class="mb-0">Tidak ada data ditemukan</p>
+                                </div>
                             </td>
                         </tr>
                     @endforelse
