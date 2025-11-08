@@ -15,38 +15,38 @@
                 @csrf
  
                 <div class="form-group">
-                    <label for="nis">NIS (Nomor Induk Siswa)</label>
+                    <label class="font-weight-bold" for="nis">NIS (Nomor Induk Siswa)</label>
                     <input type="text" name="nis" class="form-control" placeholder="Masukkan NIS"
-                        value="{{ old('nis') }}" required />
+                        value="{{ old('nis') }}" required autofocus />
                 </div>
                 
                 <div class="form-group">
-                    <label for="name">Nama Siswa</label>
+                    <label class="font-weight-bold" for="name">Nama Siswa</label>
                     <input type="text" name="name" class="form-control" placeholder="Masukkan nama siswa"
                         value="{{ old('name') }}" required />
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label class="font-weight-bold" for="email">Email</label>
                     <input type="email" name="email" class="form-control" placeholder="Masukkan email siswa (opsional)"
                         value="{{ old('email') }}" />
                 </div>
 
                 <div class="form-group">
-                    <label for="profile_picture">Foto Profil</label>
+                    <label class="font-weight-bold" for="profile_picture">Foto Profil</label>
                     <input type="file" name="profile_picture" id="profile_picture" class="form-control" accept="image/*" required
                         onchange="previewImage(event)" />
                     <img id="imagePreview" class="img-fluid mt-2" style="max-width: 300px; display: none;" />
                 </div>
                 
                 <div class="form-group">
-                    <label for="grade_level">Tingkat Kelas</label>
+                    <label class="font-weight-bold" for="grade_level">Tingkat Kelas</label>
                     <input type="number" name="grade_level" class="form-control" placeholder="Masukkan tingkat kelas (misal: 10)"
                         value="{{ old('grade_level') }}" required min="10" max="12" />
                 </div>
                 
                 <div class="form-group">
-                    <label for="major_id">Jurusan Saat Ini (Jika ada)</label>
+                    <label class="font-weight-bold" for="major_id">Jurusan Saat Ini (Jika ada)</label>
                     <select class="form-control" name="major_id" id="major_id">
                         <option value="" selected>Belum memiliki jurusan</option>
                         @foreach ($majors as $major)
@@ -58,12 +58,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Alamat / Keterangan Tambahan (Opsional)</label>
+                    <label class="font-weight-bold" for="description">Alamat / Keterangan Tambahan (Opsional)</label>
                     <textarea class="form-control" name="description" placeholder="Masukkan alamat lengkap atau keterangan tambahan" id="description">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="is_active">Status Keaktifan</label>
+                    <label class="font-weight-bold" for="is_active">Status Keaktifan</label>
                     <select class="form-control" name="is_active" id="is_active" required>
                         <option value="" hidden>Pilih status keaktifan</option>
                         <option value="1" {{ old('is_active') === '1' ? 'selected' : '' }}>Aktif</option>

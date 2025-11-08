@@ -106,7 +106,7 @@
                         <div class="row">
                             @foreach ($criteria as $c)
                                 <div class="col-md-6 mb-3">
-                                    <label><strong>{{ $c->name }}</strong></label>
+                                    <label class="font-weight-bold"><strong>{{ $c->name }}</strong></label>
                                     <select class="form-control" name="criteria[{{ $c->id }}]">
                                         <option value="">-- Tidak Dibatasi --</option>
                                         @foreach ($c->subCriteria as $sub)
@@ -151,37 +151,37 @@
 
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Nama</label>
+                            <label class="font-weight-bold">Nama</label>
                             <input type="text" class="form-control" value="{{ Auth::user()->name }}" disabled>
                         </div>
 
                         <div class="form-group">
-                            <label>Email</label>
+                            <label class="font-weight-bold">Email</label>
                             <input type="email" class="form-control" value="{{ Auth::user()->email }}" disabled>
                         </div>
 
                         <div class="form-group">
-                            <label>No Telepon</label>
+                            <label class="font-weight-bold">No Telepon</label>
                             <input type="text" class="form-control" name="phone" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Tanggal</label>
+                            <label class="font-weight-bold">Tanggal</label>
                             <input type="date" class="form-control" name="date" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Jam</label>
+                            <label class="font-weight-bold">Jam</label>
                             <input type="time" class="form-control" name="time" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Mobil</label>
+                            <label class="font-weight-bold">Mobil</label>
                             <input type="text" class="form-control" id="car_name" disabled>
                         </div>
 
                         <div class="form-group">
-                            <label>Jenis Booking</label>
+                            <label class="font-weight-bold">Jenis Booking</label>
                             <select name="type" class="form-control" required>
                                 <option value="">-- Pilih Jenis --</option>
                                 <option value="test_drive">Test Drive</option>

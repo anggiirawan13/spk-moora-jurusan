@@ -20,17 +20,17 @@
                 @method('PUT')
 
                 <div class="form-group">
-                    <label>Kode Jurusan</label>
+                    <label class="font-weight-bold">Kode Jurusan</label>
                     <input type="text" class="form-control" name="code" value="{{ $major->code }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Nama Jurusan</label>
+                    <label class="font-weight-bold">Nama Jurusan</label>
                     <input type="text" class="form-control" name="name" value="{{ $major->name }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Deskripsi Jurusan</label>
+                    <label class="font-weight-bold">Deskripsi Jurusan</label>
                     <input type="text" class="form-control" name="description" value="{{ $major->description }}" required>
                 </div>
 

@@ -17,7 +17,7 @@
 
                     {{-- BAGIAN 1: PEMILIHAN SISWA --}}
                     <div class="form-group">
-                        <label for="student_id">Pilih Siswa (Alternatif)</label>
+                        <label class="font-weight-bold" for="student_id">Pilih Siswa (Alternatif)</label>
                         <select class="form-control @error('student_id') is-invalid @enderror" name="student_id"
                             id="student_id" required>
                             <option value="" hidden>Pilih Siswa yang belum dinilai</option>
@@ -88,7 +88,7 @@
                                             <div id="{{ $criteriaCollapseId }}" class="collapse">
                                                 <div class="card-body">
                                                     <div class="form-group">
-                                                        <label for="criteria_{{ $k->id }}">Pilih Nilai Rapor (Skala Sub Kriteria)</label>
+                                                        <label class="font-weight-bold" for="criteria_{{ $k->id }}">Pilih Nilai Rapor (Skala Sub Kriteria)</label>
 
                                                         {{-- PENTING: NAME INPUT MENGIRIMKAN SUB CRITERIA ID DENGAN KEY KRITERIA ID --}}
                                                         <select class="form-control @error('criteria.' . $k->id) is-invalid @enderror"

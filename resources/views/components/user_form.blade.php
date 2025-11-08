@@ -26,7 +26,7 @@
             style="max-width: 300px; {{ $image ? 'display: block;' : 'display: none;' }}"
             src="{{ $image ? asset('storage/user/' . $image) : '' }}" />
 
-        <label for="image_name">Foto Profil</label>
+        <label class="font-weight-bold" for="image_name">Foto Profil</label>
         <input type="file" name="image_name" id="image_name" class="form-control" accept="image/*"
             {{ $imageRequired ? 'required' : '' }} onchange="previewImage(event)" />
 
@@ -38,17 +38,17 @@
         @endif
     </div>
     <div class="form-group">
-        <label for="name">Nama Lengkap <span class="text-danger">*</span></label>
+        <label class="font-weight-bold" for="name">Nama Lengkap <span class="text-danger">*</span></label>
         <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap"
-            value="{{ old('name', $name) }}" required />
+            value="{{ old('name', $name) }}" required autofocus />
     </div>
     <div class="form-group">
-        <label for="email">Email <span class="text-danger">*</span></label>
+        <label class="font-weight-bold" for="email">Email <span class="text-danger">*</span></label>
         <input type="email" name="email" class="form-control" placeholder="Masukkan email"
             value="{{ old('email', $email) }}" required {{ $isReadOnly ? 'readOnly' : '' }} />
     </div>
     <div class="form-group">
-        <label for="password">Password {!! $passwordRequired ? '<span class="text-danger">*</span>' : '' !!}</label>
+        <label class="font-weight-bold" for="password">Password {!! $passwordRequired ? '<span class="text-danger">*</span>' : '' !!}</label>
         <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
             placeholder="Masukkan password" {{ $passwordRequired ? 'required' : '' }} />
         @error('password')
@@ -56,7 +56,7 @@
         @enderror
     </div>
     <div class="form-group">
-        <label for="password_confirmation">Konfirmasi Password
+        <label class="font-weight-bold" for="password_confirmation">Konfirmasi Password
             {!! $passwordRequired ? '<span class="text-danger">*</span>' : '' !!}</label>
         <input type="password" name="password_confirmation"
             class="form-control @error('password_confirmation') is-invalid @enderror" placeholder="Ulangi password"
@@ -70,7 +70,7 @@
     </div>
 
     <div class="form-group">
-        <label><strong>Syarat Password:</strong></label>
+        <label class="font-weight-bold">Syarat Password:</label>
         <ul id="passwordRequirements" class="text-sm pl-3">
             <li id="char" class="text-danger">❌ Minimal 8 karakter</li>
             <li id="upper" class="text-danger">❌ Minimal 1 huruf besar</li>
@@ -81,7 +81,7 @@
     </div>
     @if ($withRole)
         <div class="form-group">
-            <label for="role">Role</label>
+            <label class="font-weight-bold" for="role">Role</label>
             <select class="form-control" name="role" required>
                 <option hidden>Pilih role</option>
                 <option {{ $role == 1 ? 'selected' : '' }} value="1">Admin</option>

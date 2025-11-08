@@ -18,7 +18,7 @@
 
                     {{-- === BAGIAN 1: INFORMASI SISWA (TETAP) === --}}
                     <div class="form-group">
-                        <label for="student_name">Siswa (Alternatif)</label>
+                        <label class="font-weight-bold" for="student_name">Siswa (Alternatif)</label>
                         <input type="text" id="student_name" class="form-control font-weight-bold" 
                             value="{{ $alternative->student->nis ?? 'N/A' }} - {{ $alternative->student->name ?? 'Siswa Tidak Ditemukan' }}" disabled>
                         
@@ -93,7 +93,7 @@
                                             <div id="{{ $criteriaCollapseId }}" class="collapse">
                                                 <div class="card-body">
                                                     <div class="form-group">
-                                                        <label for="criteria_{{ $k->id }}">Pilih Nilai Rapor (Skala Sub Kriteria)</label>
+                                                        <label class="font-weight-bold" for="criteria_{{ $k->id }}">Pilih Nilai Rapor (Skala Sub Kriteria)</label>
 
                                                         {{-- NAMA INPUT HARUS SAMA DENGAN VALIDASI DI CONTROLLER: name="criteria[{{ $k->id }}]" --}}
                                                         <select class="form-control @error('criteria.' . $k->id) is-invalid @enderror"

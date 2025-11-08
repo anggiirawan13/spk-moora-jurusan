@@ -19,18 +19,18 @@
                 @csrf
 
                 <div class="form-group">
-                    <label>Kode Jurusan</label>
-                    <input type="text" class="form-control" name="code" required>
+                    <label class="font-weight-bold">Kode Jurusan</label>
+                    <input type="text" class="form-control" name="code" placeholder="Masukkan Kode Jurusan" autofocus required>
                 </div>
 
                 <div class="form-group">
-                    <label>Nama Jurusan</label>
-                    <input type="text" class="form-control" name="name" required>
+                    <label class="font-weight-bold">Nama Jurusan</label>
+                    <input type="text" class="form-control" name="name" placeholder="Masukkan Nama Jurusan" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Deskripsi Jurusan</label>
-                    <input type="text" class="form-control" name="description" required>
+                    <label class="font-weight-bold">Deskripsi Jurusan</label>
+                    <input type="text" class="form-control" name="description" placeholder="Masukkan Deskripsi Jurusan" required>
                 </div>
 
                 <div class="form-group">

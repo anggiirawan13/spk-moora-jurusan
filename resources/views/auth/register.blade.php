@@ -45,25 +45,25 @@
                                 <div class="form-group">
                                     <img id="imagePreview" class="img-fluid mt-2"
                                         style="max-width: 300px; display: none;" />
-                                    <label for="image_name">Foto Profil</label>
+                                    <label class="font-weight-bold" for="image_name">Foto Profil</label>
                                     <input type="file" name="image_name" id="image_name" class="form-control"
                                         accept="image/*" onchange="previewImage(event)" />
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="name">Nama Lengkap <span class="text-danger">*</span></label>
+                                    <label class="font-weight-bold" for="name">Nama Lengkap <span class="text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control"
                                         placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email">Email <span class="text-danger">*</span></label>
+                                    <label class="font-weight-bold" for="email">Email <span class="text-danger">*</span></label>
                                     <input type="email" name="email" class="form-control"
                                         placeholder="Masukkan email" value="{{ old('email') }}" required />
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="password">Password <span class="text-danger">*</span></label>
+                                    <label class="font-weight-bold" for="password">Password <span class="text-danger">*</span></label>
                                     <input type="password" name="password"
                                         class="form-control @error('password') is-invalid @enderror"
                                         placeholder="Masukkan password" required />
@@ -73,7 +73,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="password_confirmation">Konfirmasi Password <span
+                                    <label class="font-weight-bold" for="password_confirmation">Konfirmasi Password <span
                                             class="text-danger">*</span></label>
                                     <input type="password" name="password_confirmation"
                                         class="form-control @error('password_confirmation') is-invalid @enderror"
@@ -88,7 +88,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label><strong>Syarat Password:</strong></label>
+                                    <label class="font-weight-bold">Syarat Password:</label>
                                     <ul id="passwordRequirements" class="text-sm pl-3">
                                         <li id="char" class="text-danger">❌ Minimal 8 karakter</li>
                                         <li id="upper" class="text-danger">❌ Minimal 1 huruf besar</li>

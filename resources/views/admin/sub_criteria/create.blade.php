@@ -54,16 +54,16 @@
                     </h6>
 
                     <div class="form-group">
-                        <label for="name">Nama Skala (Opsional, cth: A, Baik Sekali)</label>
+                        <label class="font-weight-bold" for="name">Nama Skala (Opsional, cth: A, Baik Sekali)</label>
                         <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror"
-                            value="{{ old('name') }}" placeholder="Cth: Sangat Baik atau A">
+                            value="{{ old('name') }}" placeholder="Cth: Sangat Baik atau A" autofocus>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="value">Nilai SPK Konversi (Value C)</label>
+                        <label class="font-weight-bold" for="value">Nilai SPK Konversi (Value C)</label>
                         <input type="number" id="value" name="value"
                             class="form-control @error('value') is-invalid @enderror" value="{{ old('value') }}"
                             placeholder="Contoh: 5 (Angka 1 sampai 5)" min="1" max="5">
@@ -77,7 +77,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="min_value">Nilai Rapor Minimum (Angka)</label>
+                                <label class="font-weight-bold" for="min_value">Nilai Rapor Minimum (Angka)</label>
                                 <input type="number" step="0.1" id="min_value" name="min_value"
                                     class="form-control @error('min_value') is-invalid @enderror"
                                     value="{{ old('min_value') }}" placeholder="Contoh: 90" min="0" max="100">
@@ -88,7 +88,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="max_value">Nilai Rapor Maksimum (Angka)</label>
+                                <label class="font-weight-bold" for="max_value">Nilai Rapor Maksimum (Angka)</label>
                                 <input type="number" step="0.1" id="max_value" name="max_value"
                                     class="form-control @error('max_value') is-invalid @enderror"
                                     value="{{ old('max_value') }}" placeholder="Contoh: 100" min="0" max="100">

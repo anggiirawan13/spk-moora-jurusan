@@ -18,7 +18,7 @@
                     @method('PUT')
 
                     <div class="form-group">
-                        <label for="major_id">Jurusan Tujuan</label>
+                        <label class="font-weight-bold" for="major_id">Jurusan Tujuan</label>
                         <select required class="form-control @error('major_id') is-invalid @enderror" name="major_id"
                             id="major_id">
                             <option hidden value="">Pilih Jurusan yang akan dinilai</option>
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="subject_id">Mata Pelajaran (Kriteria)</label>
+                        <label class="font-weight-bold" for="subject_id">Mata Pelajaran (Kriteria)</label>
                         <select required class="form-control @error('subject_id') is-invalid @enderror" name="subject_id"
                             id="subject_id">
                             <option hidden value="">Pilih Mata Pelajaran sebagai Kriteria</option>
@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="weight">Bobot (W)</label>
+                        <label class="font-weight-bold" for="weight">Bobot (W)</label>
                         <input required type="number" class="form-control @error('weight') is-invalid @enderror"
                             name="weight" id="weight" placeholder="Contoh: 0.25 (Pastikan total bobot Jurusan = 1.0)"
                             value="{{ old('weight', $criteria->weight) }}" min="0.01" step="0.01" max="1">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="attribute_type">Tipe Atribut</label>
+                        <label class="font-weight-bold" for="attribute_type">Tipe Atribut</label>
                         <select required class="form-control @error('attribute_type') is-invalid @enderror"
                             name="attribute_type" id="attribute_type">
                             <option hidden value="">Pilih tipe atribut</option>

@@ -19,13 +19,13 @@
                 @csrf
 
                 <div class="form-group">
-                    <label>Kode Mata Pelajaran</label>
-                    <input type="text" class="form-control" name="code" required>
+                    <label class="font-weight-bold">Kode Mata Pelajaran</label>
+                    <input type="text" class="form-control" name="code" placeholder="Masukkan Kode Mata Pelajaran" autofocus required>
                 </div>
 
                 <div class="form-group">
-                    <label>Nama Mata Pelajaran</label>
-                    <input type="text" class="form-control" name="name" required>
+                    <label class="font-weight-bold">Nama Mata Pelajaran</label>
+                    <input type="text" class="form-control" name="name" placeholder="Masukkan Nama Mata Pelajaran" required>
                 </div>
                 
                 <div class="form-group">

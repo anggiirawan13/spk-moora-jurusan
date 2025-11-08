@@ -20,12 +20,12 @@
                 @method('PUT')
 
                 <div class="form-group">
-                    <label>Kode Mata Pelajaran</label>
+                    <label class="font-weight-bold">Kode Mata Pelajaran</label>
                     <input type="text" class="form-control" name="code" value="{{ $subject->code }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Nama Mata Pelajaran</label>
+                    <label class="font-weight-bold">Nama Mata Pelajaran</label>
                     <input type="text" class="form-control" name="name" value="{{ $subject->name }}" required>
                 </div>
 
