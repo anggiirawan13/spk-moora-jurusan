@@ -82,30 +82,44 @@
                                     @endif
                                 </td>
                             @endforeach
-                            <td>
-                                <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route($showRoute, $item['id']) }}" 
-                                       class="btn btn-info btn-sm btn-action m-1"
-                                       data-toggle="tooltip" title="Lihat Detail">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                            <td class="text-center">
+                                {{-- KONDISI DROPUP BARU: Tambahkan 'dropup' jika berada di baris terakhir --}}
+                                <div class="dropdown no-arrow dropup">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton_{{ $item['id'] }}" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    {{-- Hapus 'animated--grow-in' untuk menghilangkan glitch animasi --}}
+                                    <div class="dropdown-menu dropdown-menu-right shadow"
+                                        aria-labelledby="dropdownMenuButton_{{ $item['id'] }}">
 
-                                    @auth
-                                        @if (auth()->user()->is_admin == 1)
-                                            <a href="{{ route($editRoute, $item['id']) }}" 
-                                               class="btn btn-primary btn-sm btn- m-1"
-                                               data-toggle="tooltip" title="Edit Data">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                        {{-- Aksi Lihat (Show) --}}
+                                        <a href="{{ route($showRoute, $item['id']) }}"
+                                            class="dropdown-item text-info">
+                                            <i class="fas fa-fw fa-eye mr-2"></i> Lihat Detail
+                                        </a>
 
-                                            <button type="button" 
-                                                    class="btn btn-danger btn-sm btn-action m-1"
-                                                    onclick="confirmDelete('{{ route($deleteRoute, $item['id']) }}', '{{ $item[$columns[0]['field']] ?? $item['name'] ?? 'Data' }}')"
-                                                    data-toggle="tooltip" title="Hapus Data">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        @endif
-                                    @endauth
+                                        @auth
+                                            @if (auth()->user()->is_admin == 1)
+                                                <div class="dropdown-divider"></div>
+
+                                                {{-- Aksi Edit --}}
+                                                <a href="{{ route($editRoute, $item['id']) }}"
+                                                    class="dropdown-item text-primary">
+                                                    <i class="fas fa-fw fa-edit mr-2"></i> Edit
+                                                </a>
+
+                                                {{-- Aksi Hapus --}}
+                                                <button type="button" class="dropdown-item text-danger"
+                                                @php
+                                                @endphp
+                                                    onclick="confirmDelete('{{ route($deleteRoute, $item['id']) }}', '{{ $item[$columns[0]['field']] ?? $item['name'] ?? 'Data' }}')">
+                                                    <i class="fas fa-fw fa-trash mr-2"></i> Hapus
+                                                </button>
+                                            @endif
+                                        @endauth
+                                    </div>
                                 </div>
                             </td>
                         </tr>

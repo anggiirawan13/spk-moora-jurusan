@@ -37,7 +37,7 @@
                 </a>
                 <div id="dataMaster" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Pengaturan Data Dasar:</h6>
+                        <h6 class="collapse-header">Pengaturan Data Dasar</h6>
                         <a class="collapse-item" href="{{ route('admin.major.index') }}">
                             <i class="fas fa-warehouse fa-fw"></i> Jurusan
                         </a>
@@ -75,18 +75,18 @@
                 </a>
                 <div id="spkSetup" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Pengaturan MOORA:</h6>
+                        <h6 class="collapse-header">Pengaturan MOORA</h6>
                         <a class="collapse-item" href="{{ route('admin.criteria.index') }}">
-                            <i class="fas fa-list fa-fw"></i> Kriteria & Bobot
+                            <i class="fas fa-list fa-fw"></i> Kriteria
                         </a>
                         <a class="collapse-item" href="{{ route('admin.subcriteria.index') }}">
-                            <i class="fas fa-stream fa-fw"></i> Sub Kriteria (Skala)
+                            <i class="fas fa-stream fa-fw"></i> Sub Kriteria
                         </a>
-                        <a class="collapse-item" href="{{ route('admin.alternative.index') }}">
-                            <i class="fas fa-th-list fa-fw"></i> Alternatif (Mapping)
-                        </a>
+                        {{-- <a class="collapse-item" href="{{ route('admin.alternative.index') }}"> --}}
+                            {{-- <i class="fas fa-th-list fa-fw"></i> Alternatif (Mapping) --}}
+                        {{-- </a> --}}
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Input Data:</h6>
+                        <h6 class="collapse-header">Input Data</h6>
                         <a class="collapse-item" href="{{ route('admin.rapor.index') }}">
                             <i class="fas fa-book-reader fa-fw"></i> Input Nilai Rapor
                         </a>
